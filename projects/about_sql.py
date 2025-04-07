@@ -73,7 +73,7 @@ class SolutionBlogger(SimpleBlogger):
     def __init__(self, posters=None):
         super().__init__(posters=posters or self._posters())
 
-class SolutionReviewer(ProblemBlogger):
+class SolutionReviewer(SolutionBlogger):
     def _check_task(self, task, days_before=2, **_):
         return super()._check_task(task, days_before, **_)
 
