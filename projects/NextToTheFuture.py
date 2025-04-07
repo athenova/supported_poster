@@ -69,14 +69,14 @@ class CoachSolutionBlogger(SimpleBlogger):
     
     def _posters(self):
         return [
-            TelegramPoster(chat_id='@about_sql', send_text_with_image=False),
+            TelegramPoster(chat_id='@NextToTheFuture', send_text_with_image=False),
             InstagramPoster(account_token_name='FUTUREUNLOCKED_OFFICIAL_TOKEN')
         ]
 
     def __init__(self, posters=None):
         super().__init__(posters=posters or self._posters())
 
-class SolutionReviewer(CoachSolutionBlogger):
+class CoachSolutionReviewer(CoachSolutionBlogger):
     def _check_task(self, task, days_before=1, **_):
         return super()._check_task(task, days_before, **_)
 
@@ -86,7 +86,7 @@ def review():
         # posters=[TelegramPoster(send_text_with_image=False)]
     )
     blogger.post()
-    blogger = SolutionReviewer(
+    blogger = CoachSolutionReviewer(
         posters=[TelegramPoster(chat_id=-1002312034777, send_text_with_image=False)]
         # posters=[TelegramPoster(send_text_with_image=False)]
     )
