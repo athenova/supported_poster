@@ -1,6 +1,6 @@
 from simple_blogger.blogger.basic import SimpleBlogger
-from simple_blogger.poster.TelegramPoster import TelegramPoster
-from simple_blogger.poster.InstagramPoster import InstagramPoster
+from simple_blogger.poster.telegram import TelegramPoster
+from simple_blogger.poster.instagram import InstagramPoster
 from simple_blogger.editor import Editor
 from simple_blogger.generator.openai import OpenAiTextGenerator, OpenAiImageGenerator
 from datetime import date
