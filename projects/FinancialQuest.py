@@ -1,17 +1,14 @@
-from simple_blogger.blogger.auto import AutoBlogger
+from simple_blogger.blogger.auto.cached import CachedAutoSimpleBlogger
 from simple_blogger.poster.telegram import TelegramPoster
-from simple_blogger.editor import Editor
 from simple_blogger.generator.openai import OpenAiTextGenerator, OpenAiImageGenerator
 from datetime import date
 
-root_folder = f"./files/FinancialQuest"
-
-class FinanceBlogger(AutoBlogger):
+class FinanceBlogger(CachedAutoSimpleBlogger):
     def _system_prompt(self):
         return 'Ты - известный финансист, блоггер с 1000000 подписчиков'
     
     def root_folder(self):
-        return root_folder
+        return f"./files/FinancialQuest"
     
     def _path_constructor(self, task):
         return f"{task['category']}/{task['topic']}"
@@ -53,9 +50,9 @@ def post():
     blogger.post()
 
 def init():
-    editor = Editor(root_folder)
-    editor.init_project()
+    blogger = FinanceBlogger()
+    blogger.init_project()
 
 def make_tasks():
-    editor = Editor(root_folder)
-    editor.create_auto()
+    blogger = FinanceBlogger()
+    blogger.create_auto_tasks()

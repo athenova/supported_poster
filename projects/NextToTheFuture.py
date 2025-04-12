@@ -1,18 +1,15 @@
-from simple_blogger.blogger.basic import SimpleBlogger
+from simple_blogger.blogger.finite.cached import CachedFiniteSimpleBlogger
 from simple_blogger.poster.telegram import TelegramPoster
 from simple_blogger.poster.instagram import InstagramPoster
-from simple_blogger.editor import Editor
 from simple_blogger.generator.openai import OpenAiTextGenerator, OpenAiImageGenerator
 from datetime import date
 
-problem_root_folder = f"./files/NextToTheFuture/problem"
-
-class CoachProblemBlogger(SimpleBlogger):
+class CoachProblemBlogger(CachedFiniteSimpleBlogger):
     def _system_prompt(self):
         return 'Ты - коуч будущего с передовыми техниками, нестандартными инсайтами и проверенными стратегиями, которые помогут твоим клиентам создать свою новую реальность'
     
     def root_folder(self):
-        return problem_root_folder
+        return f"./files/NextToTheFuture/problem"
     
     def _path_constructor(self, task):
         return f"{task['group']},{task['technic']}/{task['problem']}"
@@ -43,14 +40,12 @@ class CoachProblemReviewer(CoachProblemBlogger):
         return super()._check_task(task, days_before, **_)
 
 
-solution_root_folder = f"./files/NextToTheFuture/solution"
-
-class CoachSolutionBlogger(SimpleBlogger):
+class CoachSolutionBlogger(CachedFiniteSimpleBlogger):
     def _system_prompt(self):
         return 'Ты - коуч будущего с передовыми техниками, нестандартными инсайтами и проверенными стратегиями, которые помогут твоим клиентам создать свою новую реальность'
     
     def root_folder(self):
-        return solution_root_folder
+        return f"./files/NextToTheFuture/solution"
     
     def _path_constructor(self, task):
         return f"{task['group']},{task['technic']}/{task['problem']}"
@@ -101,14 +96,11 @@ def post(index=None):
         blogger.post()
 
 def init():
-    folders = [problem_root_folder, solution_root_folder]
-    for folder in folders:
-        editor = Editor(folder)
-        editor.init_project()
+    bloggers = [CoachProblemBlogger(), CoachSolutionBlogger()]
+    for blogger in bloggers:
+        blogger.init_project()
 
 def make_tasks():   
-    folders = [problem_root_folder, solution_root_folder]
-    for folder in folders:
-        editor = Editor(folder)
-        first_post_date=date(2025, 2, 24)
-        editor.create_simple(first_post_date=first_post_date, days_between_posts=3)
+    bloggers = [CoachProblemBlogger(), CoachSolutionBlogger()]
+    for blogger in bloggers:
+        blogger.create_simple_tasks(first_post_date=date(2025, 2, 24),days_between_posts=3)

@@ -1,17 +1,14 @@
-from simple_blogger.blogger.basic import SimpleBlogger
+from simple_blogger.blogger.finite.cached import CachedFiniteSimpleBlogger
 from simple_blogger.poster.telegram import TelegramPoster
-from simple_blogger.editor import Editor
 from simple_blogger.generator.openai import OpenAiTextGenerator, OpenAiImageGenerator
 from datetime import date
 
-problem_root_folder = f"./files/about_sql/problem"
-
-class ProblemBlogger(SimpleBlogger):
+class ProblemBlogger(CachedFiniteSimpleBlogger):
     def _system_prompt(self):
         return 'Ты - архитектор решений'
     
     def root_folder(self):
-        return problem_root_folder
+        return f"./files/about_sql/problem"
     
     def _path_constructor(self, task):
         return f"{task['technology']},{task['soft']}/{task['problem']}"
@@ -40,15 +37,12 @@ class ProblemReviewer(ProblemBlogger):
     def _check_task(self, task, days_before=2, **_):
         return super()._check_task(task, days_before, **_)
 
-
-solution_root_folder = f"./files/about_sql/solution"
-
-class SolutionBlogger(SimpleBlogger):
+class SolutionBlogger(CachedFiniteSimpleBlogger):
     def _system_prompt(self):
         return 'Ты - архитектор решений'
     
     def root_folder(self):
-        return solution_root_folder
+        return f"./files/about_sql/solution"
     
     def _path_constructor(self, task):
         return f"{task['technology']},{task['soft']}/{task['problem']}"
@@ -98,14 +92,11 @@ def post(index=None):
         blogger.post()
 
 def init():
-    folders = [problem_root_folder, solution_root_folder]
-    for folder in folders:
-        editor = Editor(folder,shuffle_tasks=False)
-        editor.init_project()
+    bloggers = [ProblemBlogger(), SolutionBlogger()]
+    for blogger in bloggers:
+        blogger.init_project()
 
 def make_tasks():   
-    folders = [problem_root_folder, solution_root_folder]
-    for folder in folders:
-        editor = Editor(folder,shuffle_tasks=False)
-        first_post_date=date(2025, 3, 3)
-        editor.create_simple(first_post_date=first_post_date, days_between_posts=7)
+    bloggers = [ProblemBlogger(), SolutionBlogger()]
+    for blogger in bloggers:
+        blogger.create_simple_tasks(first_post_date=date(2025, 3, 3),days_between_posts=7, shuffle=False)
